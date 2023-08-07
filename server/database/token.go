@@ -29,7 +29,7 @@ func saveTokenToDb(user *User) (int64, error) {
 		return 0, errors.New("Invalid token error")
 	}
 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	stmt, err := db.Prepare("insert into Token values (?,?)")
@@ -48,7 +48,7 @@ func saveTokenToDb(user *User) (int64, error) {
 
 
 func GetLastLoginToken(username string) string {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	user := getUserByUserName(username)
@@ -80,8 +80,8 @@ func GetLastLoginToken(username string) string {
 
 func CheckToken(token string) []string {
 	var tokens []string 
-	db := prepareDb(dbname)
-	defer db.Close() 
+	db := prepareDb()
+	defer db.Close()
 
 	res, err := db.Query("select * from Token where Value = ?", token)
 	if err != nil {
@@ -104,7 +104,7 @@ func CheckToken(token string) []string {
 
 
 func deleteAllTokens(user *User) (int64, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	stmt, err := db.Prepare("delete from Token where UserId = ?")

@@ -7,7 +7,7 @@ import (
 
 func Login(req []byte) User {
 	var user User 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	json.Unmarshal(req, &user)
@@ -24,7 +24,7 @@ func Login(req []byte) User {
 
 
 func Logout(username string) (int64, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 	user := getUserByUserName(username)
 

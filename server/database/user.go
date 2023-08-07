@@ -15,7 +15,7 @@ func GetMe(username string) User {
 
 
 func UpdateUser(req []byte, username string) (User, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	var newUser User 
@@ -33,7 +33,7 @@ func UpdateUser(req []byte, username string) (User, error) {
 }
 
 func DeleteMe(username string) int64 {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	user := getUserByUserName(username)
@@ -68,7 +68,7 @@ func deleteUserById(db *sql.DB, id int64) (int64, error) {
 
 
 func GetAllUsers() []User {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	results, err := db.Query("select * from User")
@@ -95,7 +95,7 @@ func GetAllUsers() []User {
 
 func RegisterUser(req []byte) User {
 	var user User 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	json.Unmarshal(req, &user)
@@ -121,7 +121,7 @@ func RegisterUser(req []byte) User {
 
 
 func getUserIdByName(username string) int {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 	
 	results, err := db.Query("select UserId from User where UserName = ?", username)
@@ -144,7 +144,7 @@ func getUserIdByName(username string) int {
 
 func getUserByUserName(username string) User {
 	var user User 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	res, err := db.Query("select * from User where UserName = ?", username)
@@ -164,7 +164,7 @@ func getUserByUserName(username string) User {
 
 func getUserByUserNameAndPassword(username, password string) User {
 	var user User 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close()
 
 	res, err := db.Query("select * from User where UserName = ? and Password = ?", username, password)
@@ -199,7 +199,7 @@ func saveUserToDb(db *sql.DB, user *User) (int64, error) {
 
 
 func updateUserOnDb(user *User, userId int64) (int64, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 	stmt, err := db.Prepare("update User set UserName = ?, Email = ?, Password = ?, Token = ? where UserId = ?")
 	if err != nil {

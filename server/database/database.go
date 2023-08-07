@@ -5,8 +5,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
+
 	_ "github.com/go-sql-driver/mysql"
+	environment "github.com/joho/godotenv"
 )
 
 type (
@@ -30,38 +33,44 @@ type (
 	}
 )
 
-const (
-	username = "root"
-	password = "IDeyTellYou555!"
-	hostname = "127.0.0.1:3306"
-	dbname = "timely_db"
-)
 
 var db *sql.DB 
 
 func init() {
-	db = prepareDb(dbname)
+	err := environment.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file; ", err)
+	}
+
+
+	db = prepareDb()
 	defer db.Close()
 }
 
 
-func prepareDb(dbName string) *sql.DB {
-	db, err := sql.Open("mysql", dsn(dbName))
+func prepareDb() *sql.DB {
+	connection := os.Getenv("DB_CONNECTION")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	hostname := os.Getenv("DB_HOSTNAME")
+	dbname := os.Getenv("DB_NAME")
+
+	db, err := sql.Open(connection, dsn(username, password, hostname))
 	if err != nil {
 		log.Printf("error %s during the open db\n", err)
 	}
 
-	connectToDb(db)
+	connectToDb(dbname, db)
 	return db 
 }
 
 
-func dsn(databaseName string) string {
+func dsn(username, password, hostname string) string {
 	return fmt.Sprintf("%s:%s@tcp(%s)/", username, password, hostname)
 }
 
 
-func connectToDb(db *sql.DB) {
+func connectToDb(dbname string, db *sql.DB) {
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelFunc()
 	res, err := db.ExecContext(ctx, "CREATE DATABASE IF NOT EXISTS " + dbname)

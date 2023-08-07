@@ -8,7 +8,7 @@ import (
 
 func GetAllTasks() []Task {
 	var tasks []Task 
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	res, err := db.Query("select * from Task")
@@ -28,7 +28,7 @@ func GetAllTasks() []Task {
 }
 
 func GetTasksUnderUser(username string) []string {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	user := getUserByUserName(username)
@@ -66,7 +66,7 @@ func CreateTask(username string, req []byte) User {
 
 
 func saveTaskToDb(user User, task Task) (int64, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	stmt, err := db.Prepare("insert into Task VALUES(?,?,?)")
@@ -83,7 +83,7 @@ func saveTaskToDb(user User, task Task) (int64, error) {
 }
 
 func deleteAllTasks(user *User) (int64, error) {
-	db := prepareDb(dbname)
+	db := prepareDb()
 	defer db.Close() 
 
 	stmt, err := db.Prepare("delete from Task where UserId = ?")
