@@ -1,5 +1,7 @@
-package main 
+package main
+
+import "github.com/khalidtouch/timely/route"
 
 func main() {
-	/*todo() app engine */
+	route.HandleRequest()
 }
